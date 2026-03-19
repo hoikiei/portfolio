@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘海琪 — AI Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            bg: '#ffffff',
+                            gray: '#f5f5f7',
+                            text: '#1d1d1f',
+                            subtext: '#86868b',
+                            blue: '#0071e3',
+                            border: '#d2d2d7',
+                            hover: '#e8e8ed'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'apple': '0 4px 16px rgba(0, 0, 0, 0.08)',
+                        'apple-hover': '0 8px 24px rgba(0, 0, 0, 0.12)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        /* Apple风格背景光效 - 蓝黄绿 */
+        .ambient-light {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .light-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        /* 蓝色光球 - 右上 */
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -10%;
+            right: -5%;
+            animation-delay: 0s;
+        }
+        
+        /* 绿色光球 - 左侧 */
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+            top: 20%;
+            left: -10%;
+            animation-delay: -5s;
+        }
+        
+        /* 黄色光球 - 右下 */
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+            bottom: 5%;
+            right: 25%;
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #1d1d1f 0%, #434344 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .carousel-slide {
+            min-width: 100%;
+            padding: 0 12px;
+            box-sizing: border-box;
+        }
+        
+        @media (min-width: 768px) {
+            .carousel-slide {
+                min-width: 50%;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .carousel-slide {
+                min-width: 33.333%;
+            }
+        }
+        
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d2d2d7;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .carousel-dot.active {
+            background: #1d1d1f;
+            transform: scale(1.2);
+        }
+        
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .carousel-container:hover .carousel-btn {
+            opacity: 1;
+        }
+        
+        .carousel-btn:hover {
+            background: #ffffff;
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .carousel-btn.prev { left: 20px; }
+        .carousel-btn.next { right: 20px; }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .link-hover {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .link-hover::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s;
+        }
+        
+        .link-hover:hover::after {
+            width: 100%;
+        }
+        
+        .tool-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-card:hover .arrow-icon {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+        
+        .arrow-icon {
+            transition: all 0.3s ease;
+            opacity: 0.3;
+        }
+        
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tool-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .tool-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 背景光效 - 蓝黄绿 -->
+    <div class="ambient-light">
+        <div class="light-orb orb-1"></div>
+        <div class="light-orb orb-2"></div>
+        <div class="light-orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b border-apple-border/30 transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-14">
+                <a href="#" class="text-lg font-semibold tracking-tight text-apple-text">Hoiki.AI</a>
+                <div class="hidden md:flex space-x-8 text-xs font-medium tracking-wide text-apple-subtext">
+                    <a href="#tools" class="hover:text-apple-text transition-colors">Tools</a>
+                    <a href="#project" class="hover:text-apple-text transition-colors">Project</a>
+                    <a href="#ai-idol" class="hover:text-apple-text transition-colors">AI Idol</a>
+                    <a href="#video" class="hover:text-apple-text transition-colors">Video</a>
+                    <a href="#contact" class="hover:text-apple-text transition-colors">Contact</a>
+                </div>
+                <button class="md:hidden p-2" onclick="toggleMenu()">
+                    <svg class="w-5 h-5 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-apple-border/30 absolute w-full">
+            <div class="px-6 py-4 space-y-3 text-sm font-medium">
+                <a href="#tools" class="block text-apple-subtext hover:text-apple-text" onclick="toggleMenu()">Tools</a>
+                <a href="#project" class="block text-apple-subtext hover:text-apple-text" onclick="toggleMenu()">Project</a>
+                <a href="#ai-idol" class="block text-apple-subtext hover:text-apple-text" onclick="toggleMenu()">AI Idol</a>
+                <a href="#video" class="block text-apple-subtext hover:text-apple-text" onclick="toggleMenu()">Video</a>
+                <a href="#contact" class="block text-apple-subtext hover:text-apple-text" onclick="toggleMenu()">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-40 pb-24 md:pt-52 md:pb-40 px-6 max-w-6xl mx-auto text-center relative">
+        <div class="fade-up">
+            <p class="text-apple-subtext text-sm font-medium tracking-widest uppercase mb-4">Portfolio 2026</p>
+            <h1 class="text-6xl md:text-8xl font-semibold tracking-tight text-gradient mb-6 leading-none">
+                刘海琪
+            </h1>
+            <p class="text-xl md:text-2xl text-apple-subtext font-light tracking-wide max-w-2xl mx-auto leading-relaxed">
+                I document what I do with AI here.
+            </p>
+        </div>
+    </section>
+
+    <!-- AI Tools Section -->
+    <section id="tools" class="py-20 md:py-32 bg-apple-gray/50 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-16 text-center fade-up">
+                <h2 class="text-3xl md:text-4xl font-semibold text-apple-text mb-4 tracking-tight">AI Tools I Use</h2>
+                <p class="text-apple-subtext text-lg font-light">日常工作中使用的智能工具集</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 fade-up">
+                
+                <!-- 1. Gemini -->
+                <a href="https://gemini.google.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/Gemini.png" alt="Gemini" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">Gemini</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">生成PPT、报告，辅助多视角思考</p>
+                </a>
+
+                <!-- 2. DeepSeek -->
+                <a href="https://www.deepseek.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/DeepSeek.png" alt="DeepSeek" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">DeepSeek</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">信息数据分析，中医问诊</p>
+                </a>
+
+                <!-- 3. 豆包 -->
+                <a href="https://www.doubao.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/doubao.png" alt="豆包" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">豆包</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">解决存有明确答案的简单问题</p>
+                </a>
+
+                <!-- 4. ChatGPT -->
+                <a href="https://chat.openai.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ChatGPT.png" alt="ChatGPT" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">ChatGPT</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">工作场景的Thinking partner，AI生图</p>
+                </a>
+
+                <!-- 5. Kimi -->
+                <a href="https://kimi.moonshot.cn" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/Kimi.PNG" alt="Kimi" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">Kimi</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">前端代码生成</p>
+                </a>
+
+                <!-- 6. Midjourney -->
+                <a href="https://www.midjourney.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/Midjourney.png" alt="Midjourney" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">Midjourney</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">氛围感素材创作，视频素材创作</p>
+                </a>
+
+                <!-- 7. 可灵 -->
+                <a href="https://klingai.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/kling.png" alt="可灵" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">可灵</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">AI视频生成</p>
+                </a>
+
+                <!-- 8. NotebookLM -->
+                <a href="https://notebooklm.google.com" target="_blank" class="tool-card group bg-white rounded-2xl p-6 border border-apple-border/50 shadow-apple hover:shadow-apple-hover block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="tool-icon-wrapper">
+                            <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/NotebookLM.jpg" alt="NotebookLM" class="tool-icon-img">
+                        </div>
+                        <svg class="w-5 h-5 text-apple-subtext arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-apple-text mb-1">NotebookLM</h3>
+                    <p class="text-xs text-apple-subtext leading-relaxed">快速吃透一本书，3小时内掌握陌生领域的核心逻辑</p>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Section -->
+    <section id="project" class="py-20 md:py-32 px-6 max-w-6xl mx-auto">
+        
+        <!-- 食光机项目 -->
+        <div class="mb-32 fade-up">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-apple-gray text-xs font-medium text-apple-subtext mb-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        Web Development
+                    </div>
+                    <h3 class="text-4xl md:text-5xl font-semibold text-apple-text mb-6 tracking-tight">食光机</h3>
+                    <p class="text-apple-subtext mb-8 leading-relaxed text-lg text-justify">
+                        以任天堂游戏机形式，为选择困难症患者设计的"今天吃什么"决策工具。本质上是一个游戏化工具，用有趣的交互解决生活中的小痛点。
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-10">
+                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">HTML5</span>
+                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">CSS3 Animation</span>
+                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">Vanilla JS</span>
+                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">Web Audio API</span>
+                    </div>
+
+                    <a href="https://hoikiei.github.io/-.github.io/test4.html" target="_blank" 
+                       class="inline-flex items-center gap-2 text-apple-blue font-medium text-sm hover:gap-3 transition-all duration-300">
+                        访问网站 
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                </div>
+                
+                <div class="order-1 lg:order-2">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 aspect-[3/4] flex items-center justify-center group cursor-pointer hover:scale-[1.02] transition-transform duration-500" onclick="window.open('https://hoikiei.github.io/-.github.io/test4.html', '_blank')">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/shiguangji-preview.jpg" alt="食光机" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
+                        <div class="absolute bottom-6 right-6 w-14 h-14 bg-white/90 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110">
+                            <svg class="w-6 h-6 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI艺人企划 -->
+        <!-- AI艺人企划 - 10张图轮播 -->
+<div id="ai-idol" class="mb-32 fade-up">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-xs font-medium text-purple-700 mb-4">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                AI Creative
+            </div>
+            <h3 class="text-4xl md:text-5xl font-semibold text-apple-text tracking-tight mb-3">AI 艺人企划</h3>
+            <p class="text-apple-subtext text-lg">虚拟偶像视觉全案设计 · ChatGPT + Gemini + 元宝</p>
+        </div>
+        <div class="text-xs text-apple-subtext">
+            10 works · Mixed Media
+        </div>
+    </div>
+
+    <!-- Carousel - 10张图 -->
+    <div class="carousel-container rounded-3xl bg-apple-gray/30 p-4 md:p-8" id="artistCarousel">
+        <div class="carousel-track" id="carouselTrack">
+            
+            <!-- Slide 1: 艺人形象 (3:4) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ai-idol-main.jpg" 
+                             alt="艺人形象" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">艺人视觉形象</h4>
+                            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] rounded-full">3:4</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">角色设定 · 主视觉</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: 专辑 (1:1) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/album.jpg" 
+                             alt="专辑" 
+                             class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">专辑封面</h4>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full">1:1</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">视觉设计 · 封面排版</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 周边1 (1:1) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/merch-1.jpg" 
+                             alt="周边1" 
+                             class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">周边产品 I</h4>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full">1:1</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">产品设计 · 小卡系列</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 周边2 (1:1) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/merch-2.jpg" 
+                             alt="周边2" 
+                             class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">周边产品 II</h4>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full">1:1</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">产品设计 · 明信片系列</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: 明信片 (1:1) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/postcard.jpg" 
+                             alt="明信片" 
+                             class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">专辑明信片</h4>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full">1:1</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">印刷品设计 · 视觉排版</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: 小卡 (1:1) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/photocard.jpg" 
+                             alt="小卡" 
+                             class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">收藏小卡</h4>
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full">1:1</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">粉丝周边 · 限量卡面</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: 广告图1 (3:4) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ad-1.jpg" 
+                             alt="广告图1" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">广告视觉 I</h4>
+                            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-[10px] rounded-full">3:4</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">商业推广</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: 广告图2 (3:4) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ad-2.jpg" 
+                             alt="广告图2" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">广告视觉 II</h4>
+                            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-[10px] rounded-full">3:4</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">商业推广</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: 广告图3 (3:4) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ad-3.jpg" 
+                             alt="广告图3" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">广告视觉 III</h4>
+                            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-[10px] rounded-full">3:4</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">商业推广 </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: 广告图4 (3:4) -->
+            <div class="carousel-slide">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-apple h-full group">
+                    <div class="aspect-[3/4] bg-gray-100 relative overflow-hidden">
+                        <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ad-4.jpg" 
+                             alt="广告图4" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-apple-text">广告视觉 IV</h4>
+                            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-[10px] rounded-full">3:4</span>
+                        </div>
+                        <p class="text-sm text-apple-subtext">商业推广</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-btn prev hidden md:flex" onclick="moveCarousel(-1)">
+            <svg class="w-6 h-6 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button class="carousel-btn next hidden md:flex" onclick="moveCarousel(1)">
+            <svg class="w-6 h-6 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Dots - 10个 -->
+        <div class="flex justify-center gap-2 mt-8" id="carouselDots">
+            <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+            <div class="carousel-dot" onclick="goToSlide(1)"></div>
+            <div class="carousel-dot" onclick="goToSlide(2)"></div>
+            <div class="carousel-dot" onclick="goToSlide(3)"></div>
+            <div class="carousel-dot" onclick="goToSlide(4)"></div>
+            <div class="carousel-dot" onclick="goToSlide(5)"></div>
+            <div class="carousel-dot" onclick="goToSlide(6)"></div>
+            <div class="carousel-dot" onclick="goToSlide(7)"></div>
+            <div class="carousel-dot" onclick="goToSlide(8)"></div>
+            <div class="carousel-dot" onclick="goToSlide(9)"></div>
+        </div>
+    </div>
+    
+    <p class="text-center text-xs text-apple-subtext mt-6 opacity-60">共10张作品 · 左右滑动查看更多</p>
+</div>
+        
+        <!-- AI视频 -->
+        <div id="video" class="fade-up">
+            <div class="mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-xs font-medium text-red-700 mb-4">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    AI Video
+                </div>
+                <h3 class="text-4xl md:text-5xl font-semibold text-apple-text tracking-tight mb-3">AI 视频实验</h3>
+                <p class="text-apple-subtext text-lg">ChatGPT + 可灵 + 剪映</p>
+            </div>
+            <div class="mb-6 bg-apple-gray/50 rounded-2xl p-6 border border-apple-border/30">
+                <p class="text-apple-text text-base leading-relaxed">
+                    <span class="font-medium text-apple-blue">创意概念：</span>
+                    游戏《和平精英》产出，意指平静的旅途本身也值得享受。
+                </p>
+                <p class="text-apple-subtext text-sm mt-2">
+                    通过AI工具重新诠释游戏场景，探索数字世界的诗意表达。
+                </p>
+            </div>
+
+            <!-- HTML5视频播放器 -->
+            <div class="rounded-3xl overflow-hidden bg-black aspect-video relative shadow-apple group">
+                <video 
+                    controls 
+                    poster="https://placehold.co/1280x720/1a1a1a/ffffff?text=AI VIDEO" 
+                    class="w-full h-full object-cover"
+                    style="width: 100%; height: 100%;"
+                >
+                    <source src="https://raw.githubusercontent.com/hoikiei/portfolio/main/ai-video.mp4" type="video/mp4">
+                </video>
+            </div>
+            
+            <p class="text-center text-xs text-apple-subtext mt-4 opacity-60">点击播放按钮查看AI生成视频效果</p>
+        </div>
+            
+
+
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="py-20 border-t border-apple-border/30 bg-apple-gray/30 relative">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-200/20 to-yellow-200/20 rounded-full blur-3xl"></div>
+        </div>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <h4 class="text-3xl font-semibold text-apple-text mb-8">Let's build the future.</h4>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-sm">
+                <a href="mailto:liuu7712@163.com" class="link-hover text-apple-subtext hover:text-apple-text transition-colors">
+                    邮箱:liuu7712@163.com
+                </a>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-apple-border"></span>
+                <span class="text-apple-subtext"> 微信:dooksu12</span>
+            </div>
+            <p class="mt-16 text-xs text-apple-subtext opacity-40">© 2026 Hoiki. Crafted with AI.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Carousel Logic
+        let currentSlide = 0;
+        const track = document.getElementById('carouselTrack');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const totalSlides = slides.length;
+        let autoPlayInterval;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function updateCarousel() {
+            const slideWidth = slides[0].offsetWidth;
+            track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function moveCarousel(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+            resetAutoPlay();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+            resetAutoPlay();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 4000);
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        // Touch events for mobile swipe
+        const carousel = document.getElementById('artistCarousel');
+        
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        carousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    moveCarousel(1);
+                } else {
+                    moveCarousel(-1);
+                }
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            updateCarousel();
+        });
+
+        // Initialize carousel
+        updateCarousel();
+        startAutoPlay();
+
+        // Pause autoplay on hover
+        carousel.addEventListener('mouseenter', () => {
+            clearInterval(autoPlayInterval);
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            startAutoPlay();
+        });
+
+        // Navbar blur effect on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>
