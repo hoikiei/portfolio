@@ -446,43 +446,80 @@
     <section id="project" class="py-20 md:py-32 px-6 max-w-6xl mx-auto">
         
         <!-- 食光机项目 -->
+        <!-- 食光机项目 -->
         <div class="mb-32 fade-up">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="grid lg:grid-cols-2 gap-16 items-start">
                 <div class="order-2 lg:order-1">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-apple-gray text-xs font-medium text-apple-subtext mb-4">
                         <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                        Web Development
+                        Vibe Coding
                     </div>
-                    <h3 class="text-4xl md:text-5xl font-semibold text-apple-text mb-6 tracking-tight">食光机</h3>
-                    <p class="text-apple-subtext mb-8 leading-relaxed text-lg text-justify">
-                        以任天堂游戏机形式，为选择困难症患者设计的"今天吃什么"决策工具。本质上是一个游戏化工具，用有趣的交互解决生活中的小痛点。
-                    </p>
-                    
-                    <div class="flex flex-wrap gap-2 mb-10">
-                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">HTML5</span>
-                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">CSS3 Animation</span>
-                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">Vanilla JS</span>
-                        <span class="px-4 py-1.5 bg-apple-gray rounded-full text-xs text-apple-text font-medium">Web Audio API</span>
+                    <h3 class="text-4xl md:text-5xl font-semibold text-apple-text mb-4 tracking-tight">食光机</h3>
+            
+                    <!-- 技术徽章 -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">Prompt Engineering</span>
+                        <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">Serverless</span>
+                        <span class="px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-xs font-medium">动态时段感知</span>
+                        <span class="px-3 py-1 bg-red-50 text-red-700 rounded-full text-xs font-medium">错误降级机制</span>
                     </div>
 
-                    <a href="https://hoikiei.github.io/-.github.io/test4.html" target="_blank" 
-                       class="inline-flex items-center gap-2 text-apple-blue font-medium text-sm hover:gap-3 transition-all duration-300">
-                        访问网站 
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    <p class="text-apple-subtext mb-6 leading-relaxed text-lg">
+                        一款集成大语言模型的8-bit游戏风格应用，帮助选择困难症用户根据口味偏好获得个性化菜品推荐。
+                    </p>
+
+                    <!-- 折叠内容 -->
+                    <div class="relative">
+                        <div id="shiguangji-details" class="overflow-hidden transition-all duration-500 max-h-0 opacity-0">
+                            <div class="space-y-4 pb-6 text-apple-text">
+                                <div class="flex gap-4">
+                                    <span class="text-apple-blue font-semibold text-sm shrink-0">01</span>
+                                    <p class="text-sm leading-relaxed text-apple-subtext">基于原生JavaScript开发的像素风格抽奖工具，帮助选择困难症用户决定用餐选项。</p>
+                                </div>
+                                <div class="flex gap-4">
+                                    <span class="text-apple-blue font-semibold text-sm shrink-0">02</span>
+                                    <p class="text-sm leading-relaxed text-apple-subtext">集成智谱AI大语言模型API（GLM-4-Flash）：用户输入口味偏好（如"辣"、"日式"）后，AI动态生成与当前时段（早/午/晚/夜宵）匹配的个性化菜品（含 emoji），并自动扩充本地食物库。</p>
+                                </div>
+                                <div class="flex gap-4">
+                                    <span class="text-apple-blue font-semibold text-sm shrink-0">03</span>
+                                    <p class="text-sm leading-relaxed text-apple-subtext">展示了提示词工程（强制JSON输出）、异步API调用、正则JSON解析、CORS跨域代理（腾讯云函数封装）、错误降级机制（本地关键词备选）等AI应用开发能力。</p>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <button onclick="toggleDetails()" class="inline-flex items-center gap-2 text-apple-blue font-medium text-sm hover:gap-3 transition-all duration-300 mb-8 group">
+                            <span id="details-btn-text">了解更多</span>
+                            <svg id="details-btn-icon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <a href="https://hoikiei.github.io/aishiguangji/" target="_blank" 
+                         class="inline-flex items-center gap-2 text-apple-blue font-medium text-sm hover:gap-3 transition-all duration-300">
+                                访问网站 
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
                     </a>
                 </div>
-                
-                <div class="order-1 lg:order-2">
-                    <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 aspect-[3/4] flex items-center justify-center group cursor-pointer hover:scale-[1.02] transition-transform duration-500" onclick="window.open('https://hoikiei.github.io/-.github.io/test4.html', '_blank')">
+        
+                <div class="order-1 lg:order-2 lg:sticky lg:top-32">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-100 to-gray-200 aspect-[3/4] flex items-center justify-center group cursor-pointer hover:scale-[1.02] transition-transform duration-500" onclick="window.open('https://hoikiei.github.io/aishiguangji/', '_blank')">
                         <img src="https://raw.githubusercontent.com/hoikiei/portfolio/main/shiguangji-preview.jpg" alt="食光机" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
                         <div class="absolute bottom-6 right-6 w-14 h-14 bg-white/90 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:scale-110">
-                            <svg class="w-6 h-6 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            <svg class="w-6 h-6 text-apple-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+
 
         <!-- AI艺人企划 -->
         <!-- AI艺人企划 - 10张图轮播 -->
@@ -896,6 +933,25 @@
                 nav.classList.remove('shadow-sm');
             }
         });
+
+        // 食光机详情折叠
+        function toggleDetails() {
+            const details = document.getElementById('shiguangji-details');
+            const btnText = document.getElementById('details-btn-text');
+            const btnIcon = document.getElementById('details-btn-icon');
+            
+            if (details.style.maxHeight && details.style.maxHeight !== '0px') {
+                details.style.maxHeight = '0px';
+                details.style.opacity = '0';
+                btnText.textContent = '了解更多';
+                btnIcon.style.transform = 'rotate(0deg)';
+            } else {
+                details.style.maxHeight = details.scrollHeight + 'px';
+                details.style.opacity = '1';
+                btnText.textContent = '收起';
+                btnIcon.style.transform = 'rotate(180deg)';
+            }
+        }
     </script>
 </body>
 </html>
